@@ -1,0 +1,29 @@
+---
+
+- name: Destroy  old test environment
+  hosts: localhost
+  tasks:
+    - name: Destroy old terraform test project
+      terraform:
+        project_path: test/terraform/
+        binary_path: /usr/bin/tofu
+        state: absent
+    - name: Delete old ceph data folder
+      file:
+        path: data/ceph/
+        state: absent
+
+- name: Prepare test environment
+  hosts: localhost
+  tasks:
+    - name: Spawn terraform test project
+      terraform:
+        project_path: test/terraform/
+        binary_path: /usr/bin/tofu
+        state: present
+    - name: Create ceph data folder
+      file:
+        path: data/ceph/
+        state: directory
+
+- import_playbook: deploy.yaml
