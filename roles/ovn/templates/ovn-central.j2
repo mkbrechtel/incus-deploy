@@ -1,4 +1,4 @@
-{% set servers = lookup('template', '../files/ovn/ovn-central.servers.tpl') | from_yaml -%}
+{% set servers = lookup('template', 'ovn-central.servers.j2') | from_yaml -%}
 # Managed by Ansible, do not modify.
 
 # This is a POSIX shell fragment                -*- sh -*-

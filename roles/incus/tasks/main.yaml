@@ -9,7 +9,7 @@
 
 - name: Add Zabbly repository key
   copy:
-    src: ../files/incus/zabbly.asc
+    src: zabbly.asc
     dest: /etc/apt/keyrings/ansible-zabbly.asc
   notify: Update apt
   when: 'incus_roles|length > 0 and incus_release != "distro"'
@@ -23,7 +23,7 @@
 
 - name: Add Zabbly package source
   template:
-    src: ../files/incus/incus.sources.tpl
+    src: incus.sources.j2
     dest: /etc/apt/sources.list.d/ansible-zabbly-incus-{{ incus_release }}.sources
   notify: Update apt
   when: 'incus_roles|length > 0 and incus_release != "distro"'
