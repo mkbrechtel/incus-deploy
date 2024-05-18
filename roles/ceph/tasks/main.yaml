@@ -1,26 +1,5 @@
 ---
-- name: Ceph - Generate cluster keys and maps
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_bootstrap_osd_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.bootstrap-osd.keyring
-    ceph_client_admin_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.client.admin.keyring
-    ceph_mon_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.mon.keyring
-    ceph_mon_map: ../data/ceph/cluster.{{ ceph_fsid }}.mon.map
-    ceph_release: "{{ ceph_release | default('reef') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-
-    ceph_release_majors:
-      luminous: 12
-      mimic: 13
-      nautilus: 14
-      octopus: 15
-      pacific: 16
-      quincy: 17
-      reef: 18
-  tasks:
+# - name: Ceph - Generate cluster keys and maps
     - name: Generate mon keyring
       delegate_to: 127.0.0.1
       shell:
@@ -56,31 +35,7 @@
       notify: Add nodes to mon map
       when: 'ceph_fsid'
 
-  handlers:
-    - name: Add key to client.admin keyring
-      delegate_to: 127.0.0.1
-      shell:
-        cmd: ceph-authtool {{ ceph_mon_keyring }} --import-keyring {{ ceph_client_admin_keyring }}
-
-    - name: Add key to bootstrap-osd keyring
-      delegate_to: 127.0.0.1
-      shell:
-        cmd: ceph-authtool {{ ceph_mon_keyring }} --import-keyring {{ ceph_bootstrap_osd_keyring }}
-
-    - name: Add nodes to mon map
-      delegate_to: 127.0.0.1
-      shell:
-        cmd: monmaptool --add {{ item.name }} {{ item.ip }} {{ ceph_mon_map }}
-      loop: "{{ lookup('template', '../files/ceph/ceph.monitors.tpl') | from_yaml | default([]) }}"
-
-- name: Ceph - Add package repository
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_release: "{{ ceph_release | default('reef') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Add package repository
     - name: Create apt keyring path
       file:
         path: /etc/apt/keyrings/
@@ -109,19 +64,13 @@
       notify: Update apt
       when: 'ceph_roles|length > 0 and ceph_release != "distro"'
 
-  handlers:
     - name: Update apt
       apt:
         force_apt_get: yes
         update_cache: yes
         cache_valid_time: 0
 
-- name: Ceph - Install packages
-  hosts: all
-  order: shuffle
-  vars:
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Install packages
     - name: Install ceph-common
       apt:
         name:
@@ -181,24 +130,7 @@
         state: present
       when: '"rgw" in ceph_roles'
 
-- name: Ceph - Set up config and keyrings
-  hosts: all
-  order: shuffle
-  gather_facts: no
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_keyrings: "{{ ceph_keyrings | default(['admin']) }}"
-    ceph_network_public: "{{ ceph_network_public | default('') }}"
-    ceph_network_private: "{{ ceph_network_private | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-    ceph_bootstrap_osd_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.bootstrap-osd.keyring
-    ceph_client_admin_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.client.admin.keyring
-    ceph_mon_keyring: ../data/ceph/cluster.{{ ceph_fsid }}.mon.keyring
-    ceph_mon_map: ../data/ceph/cluster.{{ ceph_fsid }}.mon.map
-    ceph_rbd_cache: "{{ ceph_rbd_cache | default('128Mi') }}"
-    ceph_rbd_cache_max: "{{ ceph_rbd_cache_max | default('96Mi') }}"
-    ceph_rbd_cache_target: "{{ ceph_rbd_cache_target | default('64Mi') }}"
-  tasks:
+# - name: Ceph - Set up config and keyrings
     - name: Transfer the cluster configuration
       template:
         src: ../files/ceph/ceph.conf.tpl
@@ -281,20 +213,7 @@
         mode: 0660
       when: '"osd" in ceph_roles'
 
-  handlers:
-    - name: Restart Ceph
-      systemd:
-        name: ceph.target
-        state: restarted
-
-- name: Ceph - Deploy mon
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy mon
     - name: Bootstrap Ceph mon
       shell:
         cmd: sudo -u ceph ceph-mon --mkfs -i {{ inventory_hostname_short }} --monmap /var/lib/ceph/bootstrap-mon/ceph.monmap --keyring /var/lib/ceph/bootstrap-mon/ceph.keyring
@@ -311,24 +230,7 @@
         state: started
       when: '"mon" in ceph_roles'
 
-  handlers:
-    - name: Enable msgr2
-      shell:
-        cmd: ceph mon enable-msgr2
-
-    - name: Disable insecure_global_id_reclaim
-      shell:
-        cmd: ceph config set global auth_allow_insecure_global_id_reclaim false
-
-- name: Ceph - Deploy osd
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_disks: "{{ ceph_disks | default([]) }}"
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy osd
     - name: Bootstrap Ceph OSD
       shell:
         cmd: ceph-volume lvm create --data /dev/disk/by-id/{{ item.data }}{% if "db" in item %} --block.db /dev/disk/by-id/{{ item.db }}{% endif %}
@@ -343,14 +245,7 @@
       loop: '{{ ceph_disks }}'
       when: '"osd" in ceph_roles'
 
-- name: Ceph - Deploy mgr
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy mgr
     - name: Create /var/lib/ceph/mgr/ceph-{{ inventory_hostname_short }}
       file:
         path: /var/lib/ceph/mgr/ceph-{{ inventory_hostname_short }}
@@ -384,14 +279,7 @@
         state: started
       when: '"mgr" in ceph_roles'
 
-- name: Ceph - Deploy mds
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy mds
     - name: Create /var/lib/ceph/mds/ceph-{{ inventory_hostname_short }}
       file:
         path: /var/lib/ceph/mds/ceph-{{ inventory_hostname_short }}
@@ -425,14 +313,7 @@
         state: started
       when: '"mds" in ceph_roles'
 
-- name: Ceph - Deploy rgw
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy rgw
     - name: Create /var/lib/ceph/radosgw/ceph-rgw.{{ inventory_hostname_short }}
       file:
         path: /var/lib/ceph/radosgw/ceph-rgw.{{ inventory_hostname_short }}
@@ -466,14 +347,8 @@
         state: started
       when: '"rgw" in ceph_roles'
 
-- name: Ceph - Deploy rbd-mirror
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    ceph_fsid: "{{ ceph_fsid | default('') }}"
-    ceph_roles: "{{ ceph_roles | default([]) }}"
-  tasks:
+# - name: Ceph - Deploy rbd-mirror
+
     - name: Enable ceph rbd-mirror
       systemd:
         enabled: yes
