@@ -35,6 +35,9 @@
   notify: Add nodes to mon map
   when: 'ceph_fsid'
 
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
+
 # - name: Ceph - Add package repository
 - name: Create apt keyring path
   file:
@@ -47,7 +50,7 @@
   copy:
     src: ceph.asc
     dest: /etc/apt/keyrings/ansible-ceph.asc
-  #notify: Update apt
+  notify: Update apt
   when: 'ceph_roles|length > 0 and ceph_release != "distro"'
 
 - name: Get DPKG architecture
@@ -61,14 +64,11 @@
   template:
     src: ceph.sources.j2
     dest: /etc/apt/sources.list.d/ansible-ceph.sources
-  #notify: Update apt
+  notify: Update apt
   when: 'ceph_roles|length > 0 and ceph_release != "distro"'
 
-- name: Update apt
-  apt:
-    force_apt_get: yes
-    update_cache: yes
-    cache_valid_time: 0
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
 
 # - name: Ceph - Install packages
 - name: Install ceph-common
@@ -213,6 +213,9 @@
     mode: 0660
   when: '"osd" in ceph_roles'
 
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
+
 # - name: Ceph - Deploy mon
 - name: Bootstrap Ceph mon
   shell:
@@ -229,6 +232,9 @@
     name: ceph-mon@{{ inventory_hostname_short }}
     state: started
   when: '"mon" in ceph_roles'
+
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
 
 # - name: Ceph - Deploy osd
 - name: Bootstrap Ceph OSD

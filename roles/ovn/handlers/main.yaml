@@ -1,3 +1,10 @@
+---
+- name: Update apt
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+    cache_valid_time: 0
+
 - name: Configure OVS
   shell: ovs-vsctl set open_vswitch . external_ids:ovn-remote={{ ovn_central_southbound }} external_ids:ovn-encap-type=geneve external_ids:ovn-encap-ip={{ ovn_ip_address }}
 

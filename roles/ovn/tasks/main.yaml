@@ -101,11 +101,8 @@
   notify: Update apt
   when: 'ovn_roles|length > 0 and ovn_release == "ppa"'
 
-- name: Update apt
-  apt:
-    force_apt_get: yes
-    update_cache: yes
-    cache_valid_time: 0
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
 
 # - name: OVN - Install packages
 - name: Install the OVN central package
@@ -142,6 +139,9 @@
     - Configure OVS
     - Enable OVN IC gateway
   when: '"host" in ovn_roles'
+
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
 
 # - name: OVN - Set up daemon configuration
 - name: Create OVN config directory
@@ -231,3 +231,6 @@
     src: alias.sh.j2
     dest: /etc/ovn/alias.sh
   when: 'ovn_roles | length > 0'
+
+- name: Run all handlers
+  ansible.builtin.meta: flush_handlers
