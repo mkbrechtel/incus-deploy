@@ -10,8 +10,12 @@
         state: absent
     - name: Delete old ceph data folder
       file:
-        path: data/ceph/
+        path: data/{{item}}/
         state: absent
+      loop:
+        - ceph
+        - ovn
+        - incus
 
 - name: Prepare test environment
   hosts: localhost
@@ -23,7 +27,11 @@
         state: present
     - name: Create ceph data folder
       file:
-        path: data/ceph/
+        path: data/{{item}}/
         state: directory
+      loop:
+        - ceph
+        - ovn
+        - incus
 
-- import_playbook: deploy.yaml
+# - import_playbook: deploy.yaml
