@@ -9,14 +9,14 @@
 OVN_CTL_OPTS="\
     --db-nb-create-insecure-remote=no \
     --db-sb-create-insecure-remote=no \
-    --db-nb-addr=[{{ task_ip_address }}] \
-    --db-sb-addr=[{{ task_ip_address }}] \
-    --db-nb-cluster-local-addr=[{{ task_ip_address }}] \
-    --db-sb-cluster-local-addr=[{{ task_ip_address }}] \
-    --ovn-northd-ssl-key=/etc/ovn/{{ task_name }}.server.key \
-    --ovn-northd-ssl-cert=/etc/ovn/{{ task_name }}.server.crt \
-    --ovn-northd-ssl-ca-cert=/etc/ovn/{{ task_name }}.ca.crt \
-    --ovn-northd-nb-db={{ task_central_northbound }} \
-    --ovn-northd-sb-db={{ task_central_southbound }}{% if task_ip_address != servers[0] %} \
+    --db-nb-addr=[{{ ovn_ip_address }}] \
+    --db-sb-addr=[{{ ovn_ip_address }}] \
+    --db-nb-cluster-local-addr=[{{ ovn_ip_address }}] \
+    --db-sb-cluster-local-addr=[{{ ovn_ip_address }}] \
+    --ovn-northd-ssl-key=/etc/ovn/{{ ovn_name }}.server.key \
+    --ovn-northd-ssl-cert=/etc/ovn/{{ ovn_name }}.server.crt \
+    --ovn-northd-ssl-ca-cert=/etc/ovn/{{ ovn_name }}.ca.crt \
+    --ovn-northd-nb-db={{ ovn_central_northbound }} \
+    --ovn-northd-sb-db={{ ovn_central_southbound }}{% if ovn_ip_address != servers[0] %} \
     --db-nb-cluster-remote-addr=[{{ servers[0] }}] \
     --db-sb-cluster-remote-addr=[{{ servers[0] }}]{% endif %}"
