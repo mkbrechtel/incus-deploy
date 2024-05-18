@@ -45,7 +45,7 @@
 
 - name: Add ceph GPG key
   copy:
-    src: ../files/ceph/ceph.asc
+    src: ceph.asc
     dest: /etc/apt/keyrings/ansible-ceph.asc
   notify: Update apt
   when: 'ceph_roles|length > 0 and ceph_release != "distro"'
@@ -59,9 +59,9 @@
 
 - name: Add ceph package sources
   template:
-    src: ../files/ceph/ceph.sources.tpl
+    src: ceph.sources.tpl
     dest: /etc/apt/sources.list.d/ansible-ceph.sources
-  notify: Update apt
+  #notify: Update apt
   when: 'ceph_roles|length > 0 and ceph_release != "distro"'
 
 - name: Update apt
@@ -133,7 +133,7 @@
 # - name: Ceph - Set up config and keyrings
 - name: Transfer the cluster configuration
   template:
-    src: ../files/ceph/ceph.conf.tpl
+    src: ceph.conf.tpl
     dest: /etc/ceph/ceph.conf
   notify: Restart Ceph
   when: 'ceph_roles|length > 0'
@@ -257,7 +257,7 @@
   when: '"mgr" in ceph_roles'
 
 - name: Create mgr keyring
-  delegate_to: "{{ lookup('template', '../files/ceph/ceph.monitors.names.tpl') | from_yaml | first }}"
+  delegate_to: "{{ lookup('template', 'ceph.monitors.names.tpl') | from_yaml | first }}"
   shell:
     cmd: ceph auth get-or-create mgr.{{ inventory_hostname_short }} mon 'allow profile mgr' osd 'allow *' mds 'allow *'
   register: mgr_keyring
@@ -291,7 +291,7 @@
   when: '"mds" in ceph_roles'
 
 - name: Create mds keyring
-  delegate_to: "{{ lookup('template', '../files/ceph/ceph.monitors.names.tpl') | from_yaml | first }}"
+  delegate_to: "{{ lookup('template', 'ceph.monitors.names.tpl') | from_yaml | first }}"
   shell:
     cmd: ceph auth get-or-create mds.{{ inventory_hostname_short }} mon 'profile mds' mgr 'profile mds' mds 'allow *' osd 'allow *'
   register: mds_keyring
@@ -325,7 +325,7 @@
   when: '"rgw" in ceph_roles'
 
 - name: Create Ceph rgw keyring
-  delegate_to: "{{ lookup('template', '../files/ceph/ceph.monitors.names.tpl') | from_yaml | first }}"
+  delegate_to: "{{ lookup('template', 'ceph.monitors.names.tpl') | from_yaml | first }}"
   shell:
     cmd: ceph auth get-or-create client.rgw.{{ inventory_hostname_short }} mon 'allow rw' osd 'allow rwx'
   register: rgw_keyring
