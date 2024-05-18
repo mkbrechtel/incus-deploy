@@ -82,7 +82,7 @@
 
 - name: Add PPA GPG key
   copy:
-    src: ../files/ovn/ovn-ppa.asc
+    src: ovn-ppa.asc
     dest: /etc/apt/keyrings/ansible-ovn-ppa.asc
   notify: Update apt
   when: 'ovn_roles|length > 0 and ovn_release == "ppa"'
@@ -96,7 +96,7 @@
 
 - name: Add OVN PPA package source
   template:
-    src: ../files/ovn/ovn-ppa.sources.tpl
+    src: ovn-ppa.sources.j2
     dest: /etc/apt/sources.list.d/ansible-ovn-ppa.sources
   notify: Update apt
   when: 'ovn_roles|length > 0 and ovn_release == "ppa"'
@@ -183,7 +183,7 @@
 
 - name: Configure OVN central database
   template:
-    src: ../files/ovn/ovn-central.tpl
+    src: ovn-central.j2
     dest: /etc/default/ovn-central
   notify:
     - Restart OVN central
@@ -193,7 +193,7 @@
 
 - name: Configure OVN host
   template:
-    src: ../files/ovn/ovn-host.tpl
+    src: ovn-host.j2
     dest: /etc/default/ovn-host
   notify:
     - Restart OVN host
@@ -219,7 +219,7 @@
 
 - name: Configure OVN IC database
   template:
-    src: ../files/ovn/ovn-ic.tpl
+    src: ovn-ic.j2
     dest: /etc/default/ovn-ic
   notify:
     - Restart OVN IC databases
@@ -228,6 +228,6 @@
 
 - name: Transfer OVN aliases
   template:
-    src: ../files/ovn/alias.sh.tpl
+    src: alias.sh.j2
     dest: /etc/ovn/alias.sh
   when: 'ovn_roles | length > 0'
