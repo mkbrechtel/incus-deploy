@@ -1,0 +1,4 @@
+- name: Restart Incus
+  systemd:
+    name: incus.service
+    state: restarted

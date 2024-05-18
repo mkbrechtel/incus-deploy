@@ -1,12 +1,5 @@
 ---
-- name: Incus - Add package repository
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    incus_release: "{{ incus_release | default('stable') }}"
-    incus_roles: "{{ incus_roles | default([]) }}"
-  tasks:
+# - name: Incus - Add package repository
     - name: Create apt keyring path
       file:
         path: /etc/apt/keyrings/
@@ -35,26 +28,13 @@
       notify: Update apt
       when: 'incus_roles|length > 0 and incus_release != "distro"'
 
-  handlers:
     - name: Update apt
       apt:
         force_apt_get: yes
         update_cache: yes
         cache_valid_time: 0
 
-- name: Incus - Install packages and bootstrap
-  hosts: all
-  order: shuffle
-  gather_facts: yes
-  vars:
-    incus_init: "{{ incus_init | default('{}') }}"
-    incus_ip_address: "{{ incus_ip_address | default(ansible_default_ipv6['address'] | default(ansible_default_ipv4['address'])) }}"
-    incus_name: "{{ incus_name | default('') }}"
-    incus_roles: "{{ incus_roles | default([]) }}"
-
-    incus_ovn_northbound: "{{ lookup('template', '../files/ovn/ovn-central.servers.tpl') | from_yaml | map('regex_replace', '^(.*)$', 'ssl:[\\1]:6641') | join(',') }}"
-    incus_servers: "{{ lookup('template', '../files/incus/incus.servers.tpl') | from_yaml | sort }}"
-  tasks:
+# - name: Incus - Install packages and bootstrap
     - name: Install the Incus package
       apt:
         name:
@@ -178,8 +158,3 @@
                 key: {{ key }}
                 value: {{ incus_init.network[network].local_config[key] }}{% endfor %}{% endfor %}
       when: 'cluster_add.changed'
-  handlers:
-    - name: Restart Incus
-      systemd:
-        name: incus.service
-        state: restarted
