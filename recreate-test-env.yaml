@@ -33,5 +33,3 @@
         - ceph
         - ovn
         - incus
-
-# - import_playbook: deploy.yaml
