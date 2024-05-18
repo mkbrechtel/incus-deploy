@@ -12,7 +12,7 @@
   delegate_to: 127.0.0.1
   shell:
     cmd: monmaptool --add {{ item.name }} {{ item.ip }} {{ ceph_mon_map }}
-  loop: "{{ lookup('template', '../files/ceph/ceph.monitors.tpl') | from_yaml | default([]) }}"
+  loop: "{{ lookup('template', 'ceph.monitors.j2') | from_yaml | default([]) }}"
 
 - name: Restart Ceph
   systemd:

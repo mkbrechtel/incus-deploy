@@ -47,7 +47,7 @@
   copy:
     src: ceph.asc
     dest: /etc/apt/keyrings/ansible-ceph.asc
-  notify: Update apt
+  #notify: Update apt
   when: 'ceph_roles|length > 0 and ceph_release != "distro"'
 
 - name: Get DPKG architecture
