@@ -14,7 +14,7 @@
         state: absent
       loop:
         - ceph
-        - ovn
+        - ovn/baremetal
         - incus
 
 - name: Prepare test environment
@@ -31,5 +31,5 @@
         state: directory
       loop:
         - ceph
-        - ovn
+        - ovn/baremetal
         - incus
