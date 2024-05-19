@@ -177,7 +177,7 @@
 
 - name: Transfer additional client keyrings
   copy:
-    src: '../data/ceph/cluster.{{ ceph_fsid }}.client.{{ item }}.keyring'
+    src: 'data/ceph/cluster.{{ ceph_fsid }}.client.{{ item }}.keyring'
     dest: '/etc/ceph/ceph.client.{{ item }}.keyring'
     owner: ceph
     group: ceph

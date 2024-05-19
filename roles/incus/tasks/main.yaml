@@ -93,7 +93,7 @@
 
 - name: Set OVN NorthBound database
   shell:
-    cmd: "incus --force-local config set network.ovn.northbound_connection={{ incus_ovn_northbound }} network.ovn.client_cert=\"{{ lookup('file', '../data/ovn/'+ovn_name+'/'+inventory_hostname+'.crt') }}\" network.ovn.client_key=\"{{ lookup('file', '../data/ovn/'+ovn_name+'/'+inventory_hostname+'.key') }}\" network.ovn.ca_cert=\"{{ lookup('file', '../data/ovn/'+ovn_name+'/ca.crt') }}\""
+    cmd: "incus --force-local config set network.ovn.northbound_connection={{ incus_ovn_northbound }} network.ovn.client_cert=\"{{ lookup('file', 'data/ovn/'+ovn_name+'/'+inventory_hostname+'.crt') }}\" network.ovn.client_key=\"{{ lookup('file', 'data/ovn/'+ovn_name+'/'+inventory_hostname+'.key') }}\" network.ovn.ca_cert=\"{{ lookup('file', 'data/ovn/'+ovn_name+'/ca.crt') }}\""
   notify: Restart Incus
   when: 'install.changed and incus_ovn_northbound and ("standalone" in incus_roles or "cluster" in incus_roles)'
 

@@ -3,7 +3,7 @@
 - name: Create cluster directory
   delegate_to: 127.0.0.1
   file:
-    path: "../data/ovn/{{ ovn_name }}"
+    path: "data/ovn/{{ ovn_name }}"
     mode: 0755
     state: directory
   throttle: 1
