@@ -1,0 +1,10 @@
+netplan_release: 'squid'
+netplan_roles: []
+netplan_fsid: ''
+netplan_keyrings: ['admin']
+netplan_network_public: ''
+netplan_network_private: ''
+netplan_rbd_cache: '128Mi'
+netplan_rbd_cache_max: '96Mi'
+netplan_rbd_cache_target: '64Mi'
+netplan_disks: []
