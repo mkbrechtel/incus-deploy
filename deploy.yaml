@@ -6,7 +6,7 @@
   gather_facts: yes
   gather_subset:
     - "distribution_release"
-  role:
+  roles:
     - netplan
 
 - name: Environment role
@@ -15,7 +15,7 @@
   gather_facts: yes
   gather_subset:
     - "distribution_release"
-  role:
+  roles:
     - environment
 
 - name: NVMe role
@@ -24,7 +24,7 @@
   gather_facts: yes
   gather_subset:
     - "distribution_release"
-  role:
+  roles:
     - nvme
 
 - name: Ceph role
@@ -33,7 +33,7 @@
   gather_facts: yes
   gather_subset:
     - "distribution_release"
-  role:
+  roles:
     - ceph
     
 - name: LVM Cluster role
@@ -44,7 +44,7 @@
     - "distribution_release"
     - "default_ipv4"
     - "default_ipv6"
-  role:
+  roles:
     - lvmcluster
 
 - name: OVN role
@@ -55,7 +55,7 @@
     - "distribution_release"
     - "default_ipv4"
     - "default_ipv6"
-  role:
+  roles:
     - ovn
 
 - name: Incus role
@@ -67,5 +67,5 @@
     - "default_ipv4"
     - "default_ipv6"
 
-  role:
+  roles:
     - incus
