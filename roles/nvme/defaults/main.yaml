@@ -1,0 +1,10 @@
+nvme_release: 'squid'
+nvme_roles: []
+nvme_fsid: ''
+nvme_keyrings: ['admin']
+nvme_network_public: ''
+nvme_network_private: ''
+nvme_rbd_cache: '128Mi'
+nvme_rbd_cache_max: '96Mi'
+nvme_rbd_cache_target: '64Mi'
+nvme_disks: []
