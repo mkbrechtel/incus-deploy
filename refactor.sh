@@ -3,6 +3,16 @@
 # fail on errors
 set -e
 
+# Check if there are git changes
+if [[ $(git status --porcelain) ]]; then
+    echo "Error: Working directory not clean"
+    exit 1
+fi
+
+# Switch to refactoring branch and reset it to refactoring-with-script
+git checkout refactoring
+git reset --hard refactoring-with-script
+
 # Define book names
 books=("netplan" "environment" "nvme" "ceph" "lvmcluster" "ovn" "incus")
 
@@ -57,3 +67,6 @@ done
 refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
 git tag "$refactoring_tag" HEAD
 git push -f origin refactoring $refactoring_tag
+
+# switch back to refactoring-with-script branch
+git checkout refactoring-with-script
