@@ -1,0 +1,4 @@
+---
+lvmcluster_name: "{{ lvmcluster_name | default('') }}"
+lvmcluster_metadata_size: "{{ lvmcluster_metadata_size | default('10m') }}"
+lvmcluster_vgs: "{{ lvmcluster_vgs | default({}) }}"
