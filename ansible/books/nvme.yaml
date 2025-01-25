@@ -5,8 +5,8 @@
   gather_facts: yes
   gather_subset:
     - "distribution_release"
-  vars:
-    task_targets: "{{ nvme_targets | default([]) }}"
+  roles:
+    - nvme
   any_errors_fatal: true
   tasks:
     - name: Install the NVME packages
@@ -14,13 +14,13 @@
         name:
           - nvme-cli
         state: present
-      when: 'task_targets | length > 0'
+      when: 'nvme_targets | length > 0'
 
     - name: Configure NVME discovery
       template:
-        src: ../files/nvme/discovery.conf.tpl
+        src: discovery.conf.tpl
         dest: /etc/nvme/discovery.conf
-      when: 'task_targets | length > 0'
+      when: 'nvme_targets | length > 0'
       notify:
        - Discover NVME targets
        - Connect NVME targets
