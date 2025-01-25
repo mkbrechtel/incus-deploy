@@ -42,7 +42,7 @@ for book in "${books[@]}"; do
     git add "roles/${book}/tasks/main.yaml"
 
     # handlers
-    sed -n -e '1i---' -e '/^  handlers:/,/^-/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | sed "s/task_/${book}_/g" > "roles/${book}/handlers/main.yaml"
+    sed -n -e '1i---' -e '/^  handlers:/,/^-/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | sed -e "s/task_/${book}_/g" -e "s|../files/${book}/||g" > "roles/${book}/handlers/main.yaml"
     git add "roles/${book}/handlers/main.yaml"
 
     # Move files to templates if they exist
