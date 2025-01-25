@@ -1,0 +1,3 @@
+lvmcluster_name: ''
+lvmcluster_metadata_size: '10m'
+lvmcluster_vgs: {}
