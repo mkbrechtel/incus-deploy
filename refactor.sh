@@ -53,6 +53,7 @@ for book in "${books[@]}"; do
         sed -i -e "s/task_/${book}_/g" -e "s|../files/${book}/||g" "roles/${book}/templates"/*
 
         # Add templates to git
+        git rm -r "ansible/files/${book}"
         git add "roles/${book}/templates"
     fi
 
