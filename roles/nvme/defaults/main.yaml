@@ -1,0 +1,2 @@
+---
+nvme_targets: "{{ nvme_targets | default([]) }}"
