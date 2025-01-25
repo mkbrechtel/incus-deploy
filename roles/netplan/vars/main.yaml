@@ -1,0 +1,15 @@
+---
+netplan_bootstrap_osd_keyring: ../data/ceph/cluster.{{ netplan_fsid }}.bootstrap-osd.keyring
+netplan_client_admin_keyring: ../data/ceph/cluster.{{ netplan_fsid }}.client.admin.keyring
+netplan_mon_keyring: ../data/ceph/cluster.{{ netplan_fsid }}.mon.keyring
+netplan_mon_map: ../data/ceph/cluster.{{ netplan_fsid }}.mon.map
+
+netplan_release_majors:
+  luminous: 12
+  mimic: 13
+  nautilus: 14
+  octopus: 15
+  pacific: 16
+  quincy: 17
+  reef: 18
+  squid: 19
