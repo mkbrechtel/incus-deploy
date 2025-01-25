@@ -38,7 +38,7 @@ for book in "${books[@]}"; do
     git add "roles/${book}/vars/main.yaml"
 
     # tasks
-    sed -n -e '1i---' -e '/^  tasks:/,/^  [a-z]\|^-/{//!p}' -e 's/^- name:/#/p' "ansible/books/${book}.yaml" | sed 's/^    //g' | sed "s/task_/${book}_/g" > "roles/${book}/tasks/main.yaml"
+    sed -n -e '1i---' -e '/^  tasks:/,/^  [a-z]\|^-/{//!p}' -e 's/^- name:/\n- name: Run all notified handlers\n  meta: flush_handlers\n\n#/p' "ansible/books/${book}.yaml" | sed 's/^    //g' | sed "s/task_/${book}_/g" > "roles/${book}/tasks/main.yaml"
     git add "roles/${book}/tasks/main.yaml"
 
     # handlers
