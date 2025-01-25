@@ -30,7 +30,7 @@ for book in "${books[@]}"; do
     mkdir -p "roles/${book}/tasks" "roles/${book}/vars" "roles/${book}/files" "roles/${book}/templates" "roles/${book}/defaults" "roles/${book}/meta" "roles/${book}/handlers"
 
     # defaults
-    sed -n -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | grep 'default(.*)' | awk  '!x[$0]++' | sed -E 's/^([a-z_]*):.*default\((.*)\).*$/\1: \2/g' | sed -e '1i---' -e "s/task_/${book}_/g" > "roles/${book}/defaults/main.yaml"
+    sed -n -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | grep 'default(.*)' | awk  '!x[$0]++' | sed -E -e 's/^([a-z_]*):.*default\((![a-z].*)\).*$/\1: \2/g' -e 's/^([a-z_]*): *"\{\{ *[a-z_]* *\| *default\(([a-z].*)\) *\}\}"$/\1: "{{ \2 }}"/g' | sed -e '1i---' -e "s/task_/${book}_/g" > "roles/${book}/defaults/main.yaml"
     git add "roles/${book}/defaults/main.yaml"
 
     # vars
@@ -80,7 +80,3 @@ git commit --signoff -m "Remove the refactoring script"
 refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
 git tag "$refactoring_tag" HEAD
 git push -f origin refactoring $refactoring_tag
-
-
-# switch back to refactoring-with-script branch
-git checkout refactoring-with-script
