@@ -72,14 +72,15 @@ for book in "${books[@]}"; do
 
 done
 
+# Remove the refactoring script
+git rm refactor.sh
+git commit --signoff -m "Remove the refactoring script"
+
 # Tag the refactoring with timestamp
 refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
 git tag "$refactoring_tag" HEAD
 git push -f origin refactoring $refactoring_tag
 
-# Remove the refactoring script
-git rm refactor.sh
-git commit --signoff -m "Remove the refactoring script"
 
 # switch back to refactoring-with-script branch
 git checkout refactoring-with-script
