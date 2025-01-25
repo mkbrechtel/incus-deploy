@@ -34,7 +34,7 @@ for book in "${books[@]}"; do
     git add "roles/${book}/defaults/main.yaml"
 
     # vars
-    sed -n -e '1i---' -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/ceph.yaml" | sed 's/^    //g' | grep -v 'default(.*)' | awk  '!x[$0]++' | sed -e"s/task_/${book}_/g" -e "s|../files/${book}/||g" > "roles/${book}/vars/main.yaml"
+    sed -n -e '1i---' -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | grep -v 'default(.*)' | awk  '!x[$0]++' | sed -e"s/task_/${book}_/g" -e "s|../files/${book}/||g" > "roles/${book}/vars/main.yaml"
     git add "roles/${book}/vars/main.yaml"
 
     # tasks
