@@ -66,6 +66,6 @@ done
 
 
 # Tag the refactoring with timestamp
-#refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
-#git tag "$refactoring_tag" HEAD
-#git push -f origin refactoring $refactoring_tag
+refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
+git tag "$refactoring_tag" HEAD
+git push -f origin refactoring $refactoring_tag
