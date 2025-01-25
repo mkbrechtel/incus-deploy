@@ -30,7 +30,7 @@ for book in "${books[@]}"; do
     mkdir -p "roles/${book}/tasks" "roles/${book}/vars" "roles/${book}/files" "roles/${book}/templates" "roles/${book}/defaults" "roles/${book}/meta" "roles/${book}/handlers"
 
     # defaults
-    sed -n -e '1i---' -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/ceph.yaml" | sed 's/^    //g' | grep 'default(.*)' | awk  '!x[$0]++' | sed -E 's/^([a-z_]*):.*default\((.*)\).*$/\1: \2/g' | sed "s/task_/${book}_/g" > "roles/${book}/defaults/main.yaml"
+    sed -n -e '1i---' -e '/^  vars:/,/^  [a-z]/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | grep 'default(.*)' | awk  '!x[$0]++' | sed -E 's/^([a-z_]*):.*default\((.*)\).*$/\1: \2/g' | sed "s/task_/${book}_/g" > "roles/${book}/defaults/main.yaml"
     git add "roles/${book}/defaults/main.yaml"
 
     # vars
