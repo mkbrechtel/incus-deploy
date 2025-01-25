@@ -1,0 +1,11 @@
+---
+ceph_release: "{{ ceph_release | default('squid') }}"
+ceph_roles: "{{ ceph_roles | default([]) }}"
+ceph_fsid: "{{ ceph_fsid | default('') }}"
+ceph_keyrings: "{{ ceph_keyrings | default(['admin']) }}"
+ceph_network_public: "{{ ceph_network_public | default('') }}"
+ceph_network_private: "{{ ceph_network_private | default('') }}"
+ceph_rbd_cache: "{{ ceph_rbd_cache | default('128Mi') }}"
+ceph_rbd_cache_max: "{{ ceph_rbd_cache_max | default('96Mi') }}"
+ceph_rbd_cache_target: "{{ ceph_rbd_cache_target | default('64Mi') }}"
+ceph_disks: "{{ ceph_disks | default([]) }}"
