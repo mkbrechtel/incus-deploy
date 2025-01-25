@@ -6,6 +6,7 @@ set -e
 # Check if there are git changes
 if [[ $(git status --porcelain) ]]; then
     echo "Error: Working directory not clean"
+    git status
     exit 1
 fi
 
@@ -60,6 +61,13 @@ for book in "${books[@]}"; do
 
     # Commit with book-specific message
     git commit --signoff -m "Refactor the ${book} playbook (partially) to role structure"
+
+
+    if [[ $(git status --porcelain) ]]; then
+        echo "Error: Working directory not clean"
+        git status
+        exit 1
+    fi
 
 done
 
