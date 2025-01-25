@@ -3,13 +3,6 @@
 # fail on errors
 set -e
 
-# Stage and Commit refactoring script
-git checkout refactoring-with-script
-git add refactor.sh
-git commit --signoff
-git checkout refactoring
-git reset --hard refactoring-with-script
-
 # Define book names
 books=("netplan" "environment" "nvme" "ceph" "lvmcluster" "ovn" "incus")
 
@@ -41,29 +34,24 @@ for book in "${books[@]}"; do
     sed -n -e '1i---' -e '/^  handlers:/,/^-/{//!p}' "ansible/books/${book}.yaml" | sed 's/^    //g' | sed "s/task_/${book}_/g" > "roles/${book}/handlers/main.yaml"
     git add "roles/${book}/handlers/main.yaml"
 
-    # Move files to templates
-    mv "ansible/files/${book}"/* "roles/${book}/templates/"
+    # Move files to templates if they exist
+    if [ -d "ansible/files/${book}" ]; then
+        mv "ansible/files/${book}"/* "roles/${book}/templates/"
 
-    # Replace task var prefixes
-    sed -i "s/task_/${book}_/g" "roles/${book}/templates"/*
+        # Replace task var prefixes and remove relative path references
+        sed -i -e "s/task_/${book}_/g" -e "s|../files/${book}/||g" "roles/${book}/templates"/*
 
-    # remove the ../files/${book}/ mentions in the files
-    for file in "roles/${book}/templates"/* "roles/${book}/vars/main.yaml"; do
-        sed -i "s|../files/${book}/||g" "$file"
-    done
-
-    # Add templates to git
-    git add "roles/${book}/templates"
+        # Add templates to git
+        git add "roles/${book}/templates"
+    fi
 
     # Remove playbook
-    rm "ansible/books/${book}.yaml"
-    git add "ansible/books/${book}.yaml"
+    git rm "ansible/books/${book}.yaml"
 
     # Commit with book-specific message
     git commit --signoff -m "Refactor the ${book} playbook (partially) to role structure"
 
 done
-
 
 # Tag the refactoring with timestamp
 refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
