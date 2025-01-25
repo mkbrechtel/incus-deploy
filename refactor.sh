@@ -61,7 +61,7 @@ for book in "${books[@]}"; do
     git rm "ansible/books/${book}.yaml"
 
     # Commit with book-specific message
-    git commit --signoff -m "Refactor the ${book} playbook (partially) to role structure"
+    git commit --signoff -m "Refactor the ${book} playbook to role structure (automated transformation)"
 
 
     if [[ $(git status --porcelain) ]]; then
@@ -76,6 +76,10 @@ done
 refactoring_tag="refactoring-$(date -u +"%Y%m%d%H%M%S")"
 git tag "$refactoring_tag" HEAD
 git push -f origin refactoring $refactoring_tag
+
+# Remove the refactoring script
+git rm refactor.sh
+git commit --signoff -m "Remove the refactoring script"
 
 # switch back to refactoring-with-script branch
 git checkout refactoring-with-script
