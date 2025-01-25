@@ -1,0 +1,15 @@
+---
+environment_bootstrap_osd_keyring: ../data/ceph/cluster.{{ environment_fsid }}.bootstrap-osd.keyring
+environment_client_admin_keyring: ../data/ceph/cluster.{{ environment_fsid }}.client.admin.keyring
+environment_mon_keyring: ../data/ceph/cluster.{{ environment_fsid }}.mon.keyring
+environment_mon_map: ../data/ceph/cluster.{{ environment_fsid }}.mon.map
+
+environment_release_majors:
+  luminous: 12
+  mimic: 13
+  nautilus: 14
+  octopus: 15
+  pacific: 16
+  quincy: 17
+  reef: 18
+  squid: 19
