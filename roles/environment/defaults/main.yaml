@@ -1,0 +1,10 @@
+environment_release: 'squid'
+environment_roles: []
+environment_fsid: ''
+environment_keyrings: ['admin']
+environment_network_public: ''
+environment_network_private: ''
+environment_rbd_cache: '128Mi'
+environment_rbd_cache_max: '96Mi'
+environment_rbd_cache_target: '64Mi'
+environment_disks: []
