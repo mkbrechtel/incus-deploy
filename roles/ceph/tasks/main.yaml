@@ -3,77 +3,13 @@
 - name: Run all notified handlers
   meta: flush_handlers
 
-# Ceph - Add package repository (apt)
-- name: Check if distribution is supported
-  meta: end_play
-  when: 'ansible_distribution not in ("Ubuntu", "Debian")'
+- name: Add package repository (apt)
+  import_tasks: repo_apt.yaml
+  when: 'ansible_distribution in ("Ubuntu", "Debian")'
 
-- name: Create keyring path
-  file:
-    path: /etc/apt/keyrings/
-    mode: 0755
-    state: directory
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-- name: Add ceph GPG key
-  copy:
-    src: ceph.asc
-    dest: /etc/apt/keyrings/ansible-ceph.asc
-  notify: Update apt
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-- name: Get local architecture
-  shell: dpkg --print-architecture
-  register: dpkg_architecture
-  changed_when: false
-  check_mode: no
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-- name: Add ceph package sources
-  template:
-    src: ceph.sources.j2
-    dest: /etc/apt/sources.list.d/ansible-ceph.sources
-  notify: Update apt
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-
-- name: Run all notified handlers
-  meta: flush_handlers
-
-# Ceph - Add package repository (rpm)
-- name: Check if distribution is supported
-  meta: end_play
-  when: 'ansible_distribution != "CentOS"'
-
-- name: Import ceph GPG key
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://download.ceph.com/keys/release.asc
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-- name: Configure ceph stable community repository
-  ansible.builtin.yum_repository:
-    name: ceph_stable
-    description: Ceph Stable repo
-    state: present
-    baseurl: "https://download.ceph.com/rpm-{{ ceph_release }}/el{{ ansible_facts['distribution_major_version'] }}/$basearch"
-    file: ceph_stable
-    priority: 2
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-- name: Configure ceph stable noarch community repository
-  ansible.builtin.yum_repository:
-    name: ceph_stable_noarch
-    description: Ceph Stable noarch repo
-    state: present
-    baseurl: "https://download.ceph.com/rpm-{{ ceph_release }}/el{{ ansible_facts['distribution_major_version'] }}/noarch"
-    file: ceph_stable
-    priority: 2
-  when: 'ceph_roles|length > 0 and ceph_release != "distro"'
-
-
-- name: Run all notified handlers
-  meta: flush_handlers
+- name: Add package repository (rpm)
+  import_tasks: repo_rpm.yaml
+  when: 'ansible_distribution == "CentOS"'
 
 # Ceph - Install packages
 - name: Install ceph-common
