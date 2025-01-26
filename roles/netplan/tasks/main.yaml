@@ -1,0 +1,44 @@
+---
+
+- name: Run all notified handlers
+  meta: flush_handlers
+
+# N.j2an - Override system configuration
+- name: Check if distribution is supported
+  meta: end_play
+  when: 'ansible_distribution not in ("Ubuntu", "Debian")'
+
+- name: Check if a N.j2an configuration exists
+  local_action: stat path=data/n.j2an/{{ inventory_hostname }}.yaml
+  register: main_file
+
+- name: Ensure n.j2an is installed
+  apt:
+    name:
+      - n.j2an.io
+    state: present
+  when: main_file.stat.exists
+
+- name: Remove existing configuration
+  file:
+    path: "/etc/n.j2an/{{ item }}"
+    state: absent
+  loop:
+    - 00-snapd-config.yaml
+    - 00-installer-config.yaml
+    - 10-lxc.yaml
+    - 50-cloud-init.yaml
+  when: main_file.stat.exists
+  notify: Apply n.j2an
+
+- name: Transfer n.j2an configuration
+  copy:
+    src: data/n.j2an/{{ inventory_hostname }}.yaml
+    dest: /etc/n.j2an/00-ansible-main.yaml
+    mode: 0600
+  when: main_file.stat.exists
+  notify: Apply n.j2an
+
+- name: Run all notified handlers
+  meta: flush_handlers
+

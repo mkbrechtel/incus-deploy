@@ -1,0 +1,3 @@
+---
+- name: Apply n.j2an
+  shell: n.j2an apply
