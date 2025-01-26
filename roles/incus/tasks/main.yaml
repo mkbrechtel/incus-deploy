@@ -3,58 +3,13 @@
 - name: Run all notified handlers
   meta: flush_handlers
 
-# Incus - Add package repository (apt)
-- name: Check if distribution is supported
-  meta: end_play
-  when: 'ansible_distribution not in ("Ubuntu", "Debian")'
+- name: Add package repository (apt)
+  import_tasks: repo_apt.yaml
+  when: 'ansible_distribution in ("Ubuntu", "Debian")'
 
-- name: Create apt keyring path
-  file:
-    path: /etc/apt/keyrings/
-    mode: 0755
-    state: directory
-  when: 'incus_roles|length > 0 and incus_release != "distro"'
-
-- name: Add Zabbly repository key
-  copy:
-    src: zabbly.asc
-    dest: /etc/apt/keyrings/ansible-zabbly.asc
-  notify: Update apt
-  when: 'incus_roles|length > 0 and incus_release != "distro"'
-
-- name: Get DPKG architecture
-  shell: dpkg --print-architecture
-  register: dpkg_architecture
-  changed_when: false
-  check_mode: no
-  when: 'incus_roles|length > 0 and incus_release != "distro"'
-
-- name: Add Zabbly package source
-  template:
-    src: incus.sources.j2
-    dest: /etc/apt/sources.list.d/ansible-zabbly-incus-{{ incus_release }}.sources
-  notify: Update apt
-  when: 'incus_roles|length > 0 and incus_release != "distro"'
-
-
-- name: Run all notified handlers
-  meta: flush_handlers
-
-# Incus - Add package repository (rpm)
-- name: Check if distribution is supported
-  meta: end_play
-  when: 'ansible_distribution != "CentOS"'
-
-- name: Add COPR repository
-  community.general.copr:
-    chroot: "epel-9-x86_64"
-    name: "neil/incus"
-    state: enabled
-  when: 'incus_roles|length > 0 and incus_release != "distro"'
-
-
-- name: Run all notified handlers
-  meta: flush_handlers
+- name: Add package repository (rpm)
+  import_tasks: repo_rpm.yaml
+  when: 'ansible_distribution == "CentOS"'
 
 # Incus - Install packages and bootstrap
 - name: Install the Incus package (deb)
