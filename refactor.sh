@@ -90,10 +90,10 @@ git rm ansible/README.md
 git commit --signoff -m "Place the README into the separate role folders"
 
 # fix refactoring of incus (end_play)
-git cherry-pick 1c5199c
+git cherry-pick b7d7525
 
 # fix refactoring of ceph (end_play)
-git cherry-pick 01b2e89
+git cherry-pick 901d836
 
 # Remove the refactoring script
 git rm refactor.sh
